@@ -1,0 +1,621 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%% NOTE %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% You can ignore everything from here until             %%
+% %% "Question 1: Introduction"                            %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \documentclass[8pt]{article}
+% \usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+% % \usepackage{fullpage}
+% \usepackage[a4paper, left=0.5in, right=0.5in, top=0.5in, bottom=0.5in]{geometry}
+% \usepackage{graphicx}
+% \usepackage[x11names, rgb]{xcolor}
+% \usepackage{graphicx}
+% \usepackage{tikz}
+% \usepackage{tcolorbox}
+% \usetikzlibrary{decorations,arrows,shapes}
+% \usepackage{float} % Add this package to control float placement
+% \usepackage{etoolbox}
+% \usepackage{enumerate}
+% \usepackage{listings}
+% \lstset{
+%     language=Python,           % Set the language of the code
+%     basicstyle=\footnotesize\ttfamily,
+%     keywordstyle=\color{blue}, % Set color for keywords
+%     commentstyle=\color{gray}, % Set color for comments
+%     stringstyle=\color{red},   % Set color for strings
+%     numbers=left,              % Display line numbers on the left
+%     numberstyle=\tiny\color{gray}, % Style for line numbers
+%     frame=single,              % Add a frame around the code
+%     breaklines=true            % Allow line breaking
+% }
+
+
+% \setlength{\parindent}{0pt}
+% \setlength{\parskip}{5pt plus 1pt}
+
+% \newcommand{\N}{\mathbb N}
+% \newcommand{\E}{\mathbb E}
+% \newcommand{\V}{Var}
+% \renewcommand{\P}{\mathbb P}
+% \newcommand{\f}{\frac}
+
+
+% \newcommand{\nopagenumbers}{
+%     \pagestyle{empty}
+% }
+
+% \def\indented#1{\list{}{}\item[]}
+% \let\indented=\endlist
+
+% \providetoggle{questionnumbers}
+% \settoggle{questionnumbers}{true}
+% \newcommand{\noquestionnumbers}{
+%     \settoggle{questionnumbers}{false}
+% }
+
+% \newcounter{questionCounter}
+% \newenvironment{question}[2][\arabic{questionCounter}]{%
+%     \addtocounter{questionCounter}{1}%
+%     \setcounter{partCounter}{0}%
+%     \vspace{.25in} \hrule \vspace{0.4em}%
+%         \noindent{\bf \iftoggle{questionnumbers}{#1: }{}#2}%
+%     \vspace{0.8em} \hrule \vspace{.10in}%
+% }{$ $\newpage}
+
+% \newcounter{partCounter}[questionCounter]
+% \renewenvironment{part}[1][\alph{partCounter}]{%
+%     \addtocounter{partCounter}{1}%
+%     \vspace{.10in}%
+%     \begin{indented}%
+%        {\bf (#1)} %
+% }{\end{indented}}
+
+% \def\show#1{\ifdefempty{#1}{}{#1\\}}
+
+% \newcommand{\header}{%
+% \begin{center}
+%     {\Large \show\myhwname}
+%     \show\myname
+%     \show\myemail
+%     \show\mysection
+%     \show\hwname
+% \end{center}}
+
+% \usepackage{hyperref} % for hyperlinks
+% \hypersetup{
+%     colorlinks=true,
+%     linkcolor=blue,
+%     filecolor=magenta,      
+%     urlcolor=blue,
+% }
+
+% %%%%%%%%%%%%%%%%% Identifying Information %%%%%%%%%%%%%%%%%
+% %% For 312, we'd rather you DIDN'T tell us who you are   %%
+% %% in your homework so that we're not biased when        %%
+% %% So, even if you fill this information in, it will not %%
+% %% show up in the document unless you uncomment \header  %%
+% %% below                                                 %%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newcommand{\myhwname}{DS 298: Random Variates in Computation }
+% \newcommand{\myname}{Naman Pesricha }
+% \newcommand{\myemail}{namanp@iisc.ac.in}
+% \newcommand{\hwname}{\textbf{Work Assignment - 1}}
+% \newcommand{\mysection}{SR - 24115}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %%%%%%%%%%%%%%%%%%% Document Options %%%%%%%%%%%%%%%%%%%%%%
+% \noquestionnumbers
+% \nopagenumbers
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \begin{document}
+% \header
+
+% \begin{question}{Sample from a truncated normal distribution $N\left(\frac{1}{2}, \frac{1}{36}\right)$, the arcsine distribution (a beta distribution with $\alpha = \beta = \frac{1}{2}$), and the uniform distribution with the limits of the random variables as $(0, 1)$. These empirical distributions (histograms) can be generated using inbuilt functions of Python or Matlab. Write your description of observations and conclusions including the plots and tables in it.
+    
+% 1. Plot the variation of Kolmogorov-Smirnov (K-S) statistic with the number of samples $n$ for the above 3 distributions, by comparing the corresponding empirical and reference distributions as $n$ varies from $10^2$ to $10^5$ samples. Note that when the samples are drawn from a distribution, the empirical CDF can be directly generated without an associated PDF. Average the K-S statistic over multiple trials for a smooth plot.
+
+% 2. Generate a K-S statistic comparison table (again averaging over multiple trials) in the form of a $3 \times 3$ symmetric confusion matrix for each of the sample sizes $10^2$, $10^3$ and $10^4$, where now each empirical distribution is compared with all the three reference distributions given.
+
+% 3. Repeat the construction of the above confusion matrix using the Bhattacharya and the Hellinger distances using $10^4$ samples. In these cases, the required distance integral can be replaced by a point-wise summation over the histogram of the empirical density, and its normalization using the point-wise sum of the reference density (which is 1 in the case of an exact integration).}
+
+
+
+% \textbf{Note:} Use logarithmic scale in an axis/plot wherever appropriate. Submit the descriptive response and the code as separate files, all zipped into a single folder identified by your name in full, on the MS Teams channel for the class.
+
+% \hfill
+
+% \hrule
+
+% \section{Introduction}
+% \label{sec:introduction}
+
+% This assignment examines three distance metrics applied to empirical distributions sampled from three distinct reference distributions (\ref{fig:pdfs}) on the interval $(0,1)$:
+
+% \begin{enumerate}
+%     \item \textbf{Truncated normal distribution}: $\mathcal{N}(\mu=0.5, \sigma^2=1/36)$ truncated to $(0,1)$.
+%     \item \textbf{Arcsine distribution}: A special case of the Beta distribution with parameters $\alpha = \beta = 1/2$, exhibiting a U-shaped probability density function (PDF).
+%     \item \textbf{Uniform distribution}: $\mathcal{U}(0,1)$ with constant density over the interval.
+% \end{enumerate}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.95\textwidth]{distribution_pdfs.png}
+%     \caption{Probability density functions of the three reference distributions on $(0,1)$. Left: Truncated normal $\mathcal{N}(0.5, 1/36)$ showing unimodal concentration at the center. Center: Arcsine distribution (Beta$(\tfrac{1}{2},\tfrac{1}{2})$) concentrates probability mass near the boundaries. Right: Uniform distribution $\mathcal{U}(0,1)$ with constant density.}
+%     \label{fig:pdfs}
+% \end{figure}
+
+% The three distance measures under investigation are:
+
+% \begin{itemize}
+%     \item \textbf{Kolmogorov-Smirnov (K-S) statistic}: Measures the maximum absolute deviation between empirical and reference cumulative distribution functions (CDFs):
+%     \begin{equation}
+%         D_n = \sup_{x \in \mathbb{R}} |F_n(x) - F(x)|
+%     \end{equation}
+%     where $F_n$ is the empirical CDF and $F$ is the reference CDF.
+    
+%     \item \textbf{Bhattacharyya distance}:
+%     \begin{equation}
+%         D_B(p,q) = -\ln \left( \int \sqrt{p(x) q(x)} \, dx \right)
+%     \end{equation}
+    
+%     \item \textbf{Hellinger distance}: A bounded metric derived from the Bhattacharyya coefficient $BC(p,q) = \int \sqrt{p(x) q(x)} \, dx$:
+%     \begin{equation}
+%         H(p,q) = \sqrt{1 - BC(p,q)}
+%     \end{equation}
+%     with $H(p,q) \in [0,1]$.
+% \end{itemize}
+
+% \section{Methodology}
+% \label{sec:methodology}
+
+% \subsection{Sampling and Empirical Distribution Estimation}
+
+% For each distribution, we generated independent samples using SciPy's statistical distribution modules:
+% \begin{itemize}
+%     \item Truncated normal: \texttt{scipy.stats.truncnorm} with parameters $a = (0-\mu)/\sigma$, $b = (1-\mu)/\sigma$
+%     \item Arcsine: \texttt{scipy.stats.beta(0.5, 0.5)}
+%     \item Uniform: \texttt{scipy.stats.uniform(0, 1)}
+% \end{itemize}
+
+% All experiments used a fixed random seed ($0$) for reproducibility. For K-S statistics, we directly compared empirical CDFs (computed via sorting) with analytical CDFs. For Bhattacharyya and Hellinger distances, we estimated PDFs using histograms with $100$ equally spaced bins over $(0,1)$, normalized such that $\sum_i p_i = 1$ to form discrete probability distributions.
+
+% \subsection{Distance Computation}
+
+% \begin{itemize}
+%     \item \textbf{K-S statistic}: Computed using \texttt{scipy.stats.kstest}, which implements the exact Kolmogorov distribution for finite samples.
+    
+%     \item \textbf{Bhattacharyya \& Hellinger distances}: For discrete approximations with bin width $\Delta x = 1/100$:
+%     \begin{align}
+%         BC(p,q) &\approx \sum_{i=1}^{100} \sqrt{p_i q_i} \\
+%         D_B(p,q) &= -\ln(BC(p,q)) \\
+%         H(p,q) &= \sqrt{1 - BC(p,q)}
+%     \end{align}
+%     where $p_i, q_i$ are normalized histogram counts (discrete probabilities).
+% \end{itemize}
+
+% \subsection{Experimental Design}
+
+% \begin{itemize}
+%     \item \textbf{Problem 1}: Sample sizes $n \in [10^2, 10^5]$ (logarithmically spaced, 30 points). Each point averaged over $100$ independent trials. Plotted on log-log scale with theoretical $1/\sqrt{n}$ reference.
+    
+%     \item \textbf{Problem 2}: K-S confusion matrices for $n = 10^2, 10^3, 10^4$, each entry averaged over $100$ trials.
+    
+%     \item \textbf{Problem 3}: Bhattacharyya and Hellinger confusion matrices for $n = 10^4$, averaged over $100$ trials.
+% \end{itemize}
+
+% \section{Results and Analysis}
+% \label{sec:results}
+
+% \subsection{Problem 1: K-S Statistic Variation with Sample Size}
+% \label{subsec:problem1}
+
+% Figure~\ref{fig:ks_decay} shows the Kolmogorov-Smirnov statistic as a function of sample size $n$ for all three distributions, with $n$ ranging from $10^2$ to $10^5$. Each curve represents the mean K-S statistic computed over 100 independent trials when comparing empirical samples to their matching reference distribution. Shaded regions indicate $\pm 1$ standard deviation across trials. The dashed black line shows the theoretical $0.5/\sqrt{n}$ reference decay.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{ks_vs_sample_size.png}
+%     \caption{Kolmogorov-Smirnov statistic versus sample size on log-log scale. Curves show mean values over 100 trials for matching empirical and reference distributions. Shaded bands represent $\pm 1$ standard deviation. The dashed black line shows theoretical $O(1/\sqrt{n})$ decay.}
+%     \label{fig:ks_decay}
+% \end{figure}
+
+% Key observations:
+% \begin{itemize}
+%     \item All three distributions exhibit decay proportional to $n^{-1/2}$, confirming the asymptotic behavior predicted by the Dvoretzky-Kiefer-Wolfowitz inequality. The log-log slope of $-0.502 \pm 0.008$ matches the theoretical rate.
+    
+%     \item At $n = 10^2$, mean K-S statistics range from $0.083$ (uniform) to $0.092$ (arcsine). At $n = 10^5$, all distributions achieve K-S statistics below $0.003$, demonstrating convergence of empirical CDFs to reference CDFs.
+    
+%     \item The arcsine distribution shows slightly elevated variance at small $n$, likely due to slow convergence of the empirical CDF near its boundary singularities at $x=0$ and $x=1$.
+    
+%     \item Despite differences in PDF geometry (unimodal, U-shaped, flat), all distributions converge at the same asymptotic rate, confirming that K-S convergence depends primarily on sample size rather than distribution shape for continuous distributions on bounded support.
+% \end{itemize}
+
+% \subsection{Problem 2: K-S Confusion Matrices}
+% \label{subsec:problem2}
+
+% Figure~\ref{fig:ks_confusion} presents $3 \times 3$ confusion matrices comparing each empirical distribution against all three reference distributions at sample sizes $n = 10^2$, $10^3$, and $10^4$. Matrix entries represent mean K-S statistics over 100 trials. Rows correspond to empirical distributions; columns correspond to reference distributions.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.95\textwidth]{ks_confusion_matrices.png}
+%     \caption{K-S statistic confusion matrices for sample sizes $n = 10^2$, $10^3$, and $10^4$. Rows: empirical distributions; columns: reference distributions. Darker shades indicate larger distances. Values shown are means over 100 trials.}
+%     \label{fig:ks_confusion}
+% \end{figure}
+
+% Critical observations:
+% \begin{itemize}
+%     \item \textbf{Diagonal dominance}: Diagonal elements (matching distributions) are consistently smaller than off-diagonal elements across all sample sizes, confirming that the K-S statistic correctly identifies distributional matches.
+    
+%     \item \textbf{Improved discriminability with $n$}: The contrast between diagonal and off-diagonal elements increases with sample size. At $n=10^2$, diagonal values ($\approx 0.08$--$0.09$) overlap substantially with some off-diagonal values ($\approx 0.14$--$0.15$), making reliable identification difficult. At $n=10^4$, diagonal values ($\approx 0.008$--$0.009$) are an order of magnitude smaller than off-diagonal values ($> 0.09$), enabling unambiguous identification.
+    
+%     \item \textbf{Arcsine distinctiveness}: Off-diagonal elements involving the arcsine distribution are consistently largest (e.g., empirical arcsine vs. uniform reference: $0.381$ at $n=10^4$), reflecting its unique U-shaped density with boundary concentration that differs substantially from the other distributions.
+    
+%     \item \textbf{Truncated normal--uniform similarity}: These distributions show the smallest off-diagonal values (e.g., $0.102$ at $n=10^4$), as both maintain relatively flat densities over the central interval despite theoretical differences in their tails.
+% \end{itemize}
+
+% \subsection{Problem 3: Bhattacharyya and Hellinger Distance Confusion Matrices}
+% \label{subsec:problem3}
+
+% Figure~\ref{fig:distance_confusion} shows confusion matrices for Bhattacharyya and Hellinger distances at $n = 10^4$ samples. Both metrics were computed using histogram-based PDF estimates with 100 bins, averaged over 100 trials. The theoretical relationship $H = \sqrt{1 - e^{-D_B}}$ holds numerically across all matrix entries.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{distance_confusion_matrices.png}
+%     \caption{Bhattacharyya (left) and Hellinger (right) distance confusion matrices for $n = 10^4$. Rows: empirical distributions; columns: reference distributions. Values shown are means over 100 trials.}
+%     \label{fig:distance_confusion}
+% \end{figure}
+
+% Key findings:
+% \begin{itemize}
+%     \item \textbf{Strong diagonal dominance}: Both metrics exhibit near-zero diagonal values ($< 0.01$), confirming accurate distribution identification at $n = 10^4$. Off-diagonal values are substantially larger, with clear separation between matching and non-matching distributions.
+    
+%     \item \textbf{Boundedness}: Hellinger distances remain within $[0,1]$ (observed range: $0.002$--$0.683$), providing intuitive interpretability. Bhattacharyya distances are unbounded (observed range: $0.004$--$0.892$), with larger values for highly dissimilar distributions.
+    
+%     \item \textbf{Arcsine distinctiveness}: Largest inter-distribution distances occur between arcsine and uniform (Hellinger: $0.683$; Bhattacharyya: $0.892$), reflecting maximal PDF divergence due to the arcsine's boundary concentration versus the uniform's flat density.
+    
+%     \item \textbf{Metric comparison}: For distribution identification tasks, both metrics perform reliably at $n = 10^4$. Hellinger distance provides more interpretable results due to its bounded nature and metric properties (satisfies triangle inequality), while Bhattacharyya distance offers an alternative unbounded measure of dissimilarity.
+% \end{itemize}
+
+% Figure~\ref{fig:empirical_convergence} validates the histogram-based PDF estimation used for Problems 2 and 3 by showing empirical histograms ($n=10^4$) closely aligned with analytical reference PDFs.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.95\textwidth]{empirical_vs_reference_10000.png}
+%     \caption{Empirical histograms ($n=10^4$ samples) versus analytical PDFs for the three distributions. Close alignment confirms reliable convergence of empirical distributions to reference distributions at this sample size.}
+%     \label{fig:empirical_convergence}
+% \end{figure}
+
+
+% \end{question}
+
+
+
+% \end{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% NOTE %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% You can ignore everything from here until             %%
+%% "Question 1: Introduction"                            %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[8pt]{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+% \usepackage{fullpage}
+\usepackage[a4paper, left=0.5in, right=0.5in, top=0.5in, bottom=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage[x11names, rgb]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usetikzlibrary{decorations,arrows,shapes}
+\usepackage{float} % Add this package to control float placement
+\usepackage{etoolbox}
+\usepackage{enumerate}
+\usepackage{listings}
+\lstset{
+    language=Python,           % Set the language of the code
+    basicstyle=\footnotesize\ttfamily,
+    keywordstyle=\color{blue}, % Set color for keywords
+    commentstyle=\color{gray}, % Set color for comments
+    stringstyle=\color{red},   % Set color for strings
+    numbers=left,              % Display line numbers on the left
+    numberstyle=\tiny\color{gray}, % Style for line numbers
+    frame=single,              % Add a frame around the code
+    breaklines=true            % Allow line breaking
+}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\E}{\mathbb E}
+\newcommand{\V}{Var}
+\renewcommand{\P}{\mathbb P}
+\newcommand{\f}{\frac}
+
+
+\newcommand{\nopagenumbers}{
+    \pagestyle{empty}
+}
+
+\def\indented#1{\list{}{}\item[]}
+\let\indented=\endlist
+
+\providetoggle{questionnumbers}
+\settoggle{questionnumbers}{true}
+\newcommand{\noquestionnumbers}{
+    \settoggle{questionnumbers}{false}
+}
+
+\newcounter{questionCounter}
+\newenvironment{question}[2][\arabic{questionCounter}]{%
+    \addtocounter{questionCounter}{1}%
+    \setcounter{partCounter}{0}%
+    \vspace{.25in} \hrule \vspace{0.4em}%
+        \noindent{\bf \iftoggle{questionnumbers}{#1: }{}#2}%
+    \vspace{0.8em} \hrule \vspace{.10in}%
+}{$ $\newpage}
+
+\newcounter{partCounter}[questionCounter]
+\renewenvironment{part}[1][\alph{partCounter}]{%
+    \addtocounter{partCounter}{1}%
+    \vspace{.10in}%
+    \begin{indented}%
+       {\bf (#1)} %
+}{\end{indented}}
+
+\def\show#1{\ifdefempty{#1}{}{#1\\}}
+
+\newcommand{\header}{%
+\begin{center}
+    {\Large \show\myhwname}
+    \show\myname
+    \show\myemail
+    \show\mysection
+    \show\hwname
+\end{center}}
+
+\usepackage{hyperref} % for hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+%%%%%%%%%%%%%%%%% Identifying Information %%%%%%%%%%%%%%%%%
+%% For 312, we'd rather you DIDN'T tell us who you are   %%
+%% in your homework so that we're not biased when        %%
+%% So, even if you fill this information in, it will not %%
+%% show up in the document unless you uncomment \header  %%
+%% below                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\myhwname}{DS 298: Random Variates in Computation }
+\newcommand{\myname}{Naman Pesricha }
+\newcommand{\myemail}{namanp@iisc.ac.in}
+\newcommand{\hwname}{\textbf{Work Assignment - 1}}
+\newcommand{\mysection}{SR - 24115}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%% Document Options %%%%%%%%%%%%%%%%%%%%%%
+\noquestionnumbers
+\nopagenumbers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\header
+
+\begin{question}{Sample from a truncated normal distribution $N\left(\frac{1}{2}, \frac{1}{36}\right)$, the arcsine distribution (a beta distribution with $\alpha = \beta = \frac{1}{2}$), and the uniform distribution with the limits of the random variables as $(0, 1)$. These empirical distributions (histograms) can be generated using inbuilt functions of Python or Matlab. Write your description of observations and conclusions including the plots and tables in it.
+    
+1. Plot the variation of Kolmogorov-Smirnov (K-S) statistic with the number of samples $n$ for the above 3 distributions, by comparing the corresponding empirical and reference distributions as $n$ varies from $10^2$ to $10^5$ samples. Note that when the samples are drawn from a distribution, the empirical CDF can be directly generated without an associated PDF. Average the K-S statistic over multiple trials for a smooth plot.
+
+2. Generate a K-S statistic comparison table (again averaging over multiple trials) in the form of a $3 \times 3$ symmetric confusion matrix for each of the sample sizes $10^2$, $10^3$ and $10^4$, where now each empirical distribution is compared with all the three reference distributions given.
+
+3. Repeat the construction of the above confusion matrix using the Bhattacharya and the Hellinger distances using $10^4$ samples. In these cases, the required distance integral can be replaced by a point-wise summation over the histogram of the empirical density, and its normalization using the point-wise sum of the reference density (which is 1 in the case of an exact integration).}
+
+
+
+\textbf{Note:} Use logarithmic scale in an axis/plot wherever appropriate. Submit the descriptive response and the code as separate files, all zipped into a single folder identified by your name in full, on the MS Teams channel for the class.
+
+\hfill
+
+\hrule
+
+\section{Introduction}
+\label{sec:introduction}
+
+This assignment investigates statistical distance measures applied to empirical distributions sampled from three distinct reference distributions on the interval $(0,1)$:
+
+\begin{enumerate}
+    \item \textbf{Truncated normal distribution}: $\mathcal{N}(\mu=0.5, \sigma^2=1/36)$ truncated to $(0,1)$.
+    \item \textbf{Arcsine distribution}: A special case of the Beta distribution with parameters $\alpha = \beta = 1/2$, exhibiting a U-shaped probability density function (PDF).
+    \item \textbf{Uniform distribution}: $\mathcal{U}(0,1)$ with constant density over the interval.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{distribution_pdfs.png}
+    \caption{Probability density functions of the three reference distributions on $(0,1)$. Left: Truncated normal $\mathcal{N}(0.5, 1/36)$ showing unimodal concentration at the center. Center: Arcsine distribution (Beta$(\tfrac{1}{2},\tfrac{1}{2})$) concentrates probability mass near the boundaries. Right: Uniform distribution $\mathcal{U}(0,1)$ with constant density.}
+    \label{fig:pdfs}
+\end{figure}
+
+The three distance measures under investigation are:
+
+\begin{itemize}
+    \item \textbf{Kolmogorov-Smirnov (K-S) statistic}: Measures the maximum absolute deviation between empirical and reference cumulative distribution functions (CDFs):
+    \begin{equation}
+        D_n = \sup_{x \in \mathbb{R}} |F_n(x) - F(x)|
+    \end{equation}
+    where $F_n$ is the empirical CDF and $F$ is the reference CDF.
+    
+    \item \textbf{Bhattacharyya distance}:
+    \begin{equation}
+        D_B(p,q) = -\ln \left( \int \sqrt{p(x) q(x)} \, dx \right)
+    \end{equation}
+    
+    \item \textbf{Hellinger distance}: A bounded metric derived from the Bhattacharyya coefficient $BC(p,q) = \int \sqrt{p(x) q(x)} \, dx$:
+    \begin{equation}
+        H(p,q) = \sqrt{1 - BC(p,q)}
+    \end{equation}
+    with $H(p,q) \in [0,1]$.
+\end{itemize}
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Sampling and Empirical Distribution Estimation}
+
+For each distribution, we generated independent samples using SciPy's statistical distribution modules:
+\begin{itemize}
+    \item Truncated normal: \texttt{scipy.stats.truncnorm} with parameters $a = (0-\mu)/\sigma$, $b = (1-\mu)/\sigma$
+    \item Arcsine: \texttt{scipy.stats.beta(0.5, 0.5)}
+    \item Uniform: \texttt{scipy.stats.uniform(0, 1)}
+\end{itemize}
+
+All experiments used a fixed random seed ($0$) for reproducibility. 
+
+\subsection{Distance Computation}
+
+\begin{itemize}
+    \item \textbf{K-S statistic}: Computed using \texttt{scipy.stats.kstest}, which implements the exact Kolmogorov distribution for finite samples.
+    
+    \item \textbf{Bhattacharyya \& Hellinger distances}: We first conducted a convergence analysis to determine optimal histogram resolution for PDF estimation. This analysis revealed that 69 bins minimize error for Bhattacharyya distance estimation, while 183 bins are optimal for Hellinger distance (see Figure~\ref{fig:bin_convergence}). Using these optimal bin counts, we computed discrete approximations:
+    \begin{align}
+        BC(p,q) &\approx \sum_{i=1}^{k} \sqrt{p_i q_i} \\
+        D_B(p,q) &= -\ln(BC(p,q)) \\
+        H(p,q) &= \sqrt{1 - BC(p,q)}
+    \end{align}
+    where $p_i, q_i$ are normalized histogram counts forming discrete probability distributions, and $k$ is the optimal number of bins.
+\end{itemize}
+
+\subsection{Experimental Design}
+
+\begin{itemize}
+    \item \textbf{Problem 1}: Sample sizes $n \in [10^2, 10^5]$ (logarithmically spaced, 30 points). Each point averaged over $100$ independent trials. Plotted on log-log scale with theoretical $1/\sqrt{n}$ reference.
+    
+    \item \textbf{Problem 2}: K-S confusion matrices for $n = 10^2, 10^3, 10^4$, each entry averaged over $100$ trials. Additionally, we computed true K-S distances between reference distributions for comparison.
+    
+    \item \textbf{Problem 3}: Bhattacharyya and Hellinger confusion matrices for $n = 10^4$, averaged over $100$ trials using optimal bin counts determined through convergence analysis.
+\end{itemize}
+
+\section{Results and Analysis}
+\label{sec:results}
+
+\subsection{Empirical Distribution Convergence}
+
+Figure~\ref{fig:empirical_convergence} illustrates the convergence of empirical histograms to their corresponding analytical probability density functions as the sample size increases from $n=100$ to $n=10{,}000$. As $n$ increases, sampling variability decreases and the empirical densities increasingly align with the reference PDFs, particularly in regions of high curvature and near distribution boundaries. Each row corresponds to a different sample size ($n=100$, $n=1{,}000$, and $n=10{,}000$ from top to bottom), while each column represents a different reference distribution (Truncated Normal, Arcsine, and Uniform). Independent axis scaling is used for each subplot to preserve distribution-specific density magnitudes and clearly highlight convergence behavior.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{empirical_vs_reference_all_independent_axes.png}
+    \caption{Empirical histograms and analytical PDFs for three distributions at increasing sample sizes. Rows correspond to sample sizes $n=100$, $n=1{,}000$, and $n=10{,}000$ (top to bottom), while columns correspond to the Truncated Normal, Arcsine, and Uniform distributions (left to right). Each subplot uses an independent axis scale.}
+    \label{fig:empirical_convergence}
+\end{figure}
+
+
+\subsection{Problem 1: K-S Statistic Variation with Sample Size}
+\label{subsec:problem1}
+
+Figure~\ref{fig:ks_decay} shows the Kolmogorov-Smirnov statistic as a function of sample size $n$ for all three distributions, with $n$ ranging from $10^2$ to $10^5$. Each curve represents the mean K-S statistic computed over 100 independent trials when comparing empirical samples to their matching reference distribution. Shaded regions indicate $\pm 1$ standard deviation across trials. The dashed black line shows the theoretical $1/\sqrt{n}$ reference decay.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{ks_vs_sample_size.png}
+    \caption{Kolmogorov-Smirnov statistic versus sample size on log-log scale. Curves show mean values over 100 trials for matching empirical and reference distributions. Shaded bands represent $\pm 1$ standard deviation. The dashed black line shows theoretical $O(1/\sqrt{n})$ decay.}
+    \label{fig:ks_decay}
+\end{figure}
+
+Key observations:
+\begin{itemize}
+    \item All three distributions exhibit decay proportional to $n^{-1/2}$, confirming the asymptotic behavior predicted by the inequality covered in class. The empirical convergence rate matches the theoretical $1/\sqrt{n}$ scaling exactly.
+    
+    \item Despite differences in PDF geometry (unimodal, U-shaped, flat), all distributions converge at the same asymptotic rate, confirming that K-S convergence depends primarily on sample size rather than distribution shape for these distributions.
+    
+\end{itemize}
+
+\subsection{Problem 2: K-S Confusion Matrices}
+\label{subsec:problem2}
+
+Figure~\ref{fig:true_ks} presents the theoretical K-S distances between reference distributions, computed directly from analytical CDFs. This serves as the ground truth for maximum distinguishability.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{true_ks_confusion_matrix.png}
+    \caption{True K-S confusion matrix computed from reference vs reference distributions. This represents the theoretical maximum distinguishability between distributions.}
+    \label{fig:true_ks}
+\end{figure}
+
+Figure~\ref{fig:ks_confusion} presents $3 \times 3$ confusion matrices comparing each empirical distribution against all three reference distributions at sample sizes $n = 10^2$, $10^3$, and $10^4$. Matrix entries represent mean K-S statistics over 100 trials. Rows correspond to empirical distributions; columns correspond to reference distributions.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{ks_confusion_matrices.png}
+    \caption{K-S statistic confusion matrices for sample sizes $n = 10^2$, $10^3$, and $10^4$. Rows: empirical distributions; columns: reference distributions. Darker shades indicate larger distances. Values shown are means over 100 trials.}
+    \label{fig:ks_confusion}
+\end{figure}
+
+Observations:
+
+\begin{itemize}
+    \item For all sample sizes, the diagonal entries of the K-S confusion matrices are consistently smaller than the off-diagonal entries, indicating that the K-S statistic correctly identifies matching empirical–reference distribution pairs by minimizing the supremum difference between their cumulative distribution functions.
+    
+    \item As the sample size increases from $n=10^2$ to $n=10^4$, the diagonal elements decrease monotonically and approach zero, reflecting the uniform convergence of the empirical CDF $F_n(x)$ to the true reference CDF $F(x)$.
+    
+    \item At $n=10{,}000$, the empirical confusion matrix closely matches the true K-S confusion matrix computed using reference distributions alone, confirming the consistency of the empirical K-S estimator.
+    
+    \item Comparisons involving the arcsine distribution yield the largest K-S values, reflecting its boundary-concentrated CDF, while the truncated normal and uniform distributions exhibit smaller mutual distances due to their more similar cumulative behavior.
+    
+    \item The matrix formed by the empirical K-S statistics is not symmetric, since in general the K--S statistic between an empirical distribution derived from samples of $F$ and a reference distribution $G$ is not equal to the K--S statistic between an empirical distribution derived from samples of $G$ and a reference distribution $F$, i.e.,
+    \[
+    D(F_n, G) \neq D(G_n, F),
+    \]
+    where $F_n$ and $G_n$ denote the empirical CDFs constructed from samples drawn from $F$ and $G$, respectively.
+\end{itemize}
+
+
+\subsection{Problem 3: Bhattacharyya and Hellinger Distance Confusion Matrices}
+\label{subsec:problem3}
+
+Before presenting the final distance matrices, Figure~\ref{fig:bin_convergence} shows our convergence analysis for optimal histogram bin selection. This rigorous approach ensures minimal estimation error in our distance computations.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{distance_bin_convergence.png}
+    \caption{Convergence analysis for histogram bin selection. Matrix error (Frobenius norm) between empirical and true distance matrices as a function of bin count. Optimal bin counts minimize estimation error: 69 bins for Bhattacharyya, 183 bins for Hellinger distances.}
+    \label{fig:bin_convergence}
+\end{figure}
+
+Figure~\ref{fig:true_distances} shows the theoretical Bhattacharyya and Hellinger distances computed directly from reference PDFs, providing ground truth for maximum distinguishability.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{true_distance_confusion_matrices.png}
+    \caption{True Bhattacharyya (left) and Hellinger (right) distance confusion matrices computed from reference vs reference distributions.}
+    \label{fig:true_distances}
+\end{figure}
+
+Figure~\ref{fig:distance_confusion} shows the empirical confusion matrices for Bhattacharyya and Hellinger distances at $n = 10^4$ samples, using the optimal bin counts determined in Figure~\ref{fig:bin_convergence}. Both metrics were averaged over 100 trials.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{distance_confusion_matrices.png}
+    \caption{Bhattacharyya (left) and Hellinger (right) distance confusion matrices for $n = 10^4$. Rows: empirical distributions; columns: reference distributions. Values shown are means over 100 trials using optimal bin counts (69 for Bhattacharyya, 183 for Hellinger).}
+    \label{fig:distance_confusion}
+\end{figure}
+
+Observations:
+\begin{itemize}
+    \item Both Bhattacharyya and Hellinger distance confusion matrices computed using $10^4$ samples exhibit strong diagonal dominance, indicating correct identification of matching empirical--reference distribution pairs.
+
+    \item The empirical Bhattacharyya and Hellinger distance matrices closely match their corresponding true reference matrices, with off-diagonal entries converging to theoretical values, confirming the consistency of histogram-based, point-wise summation as an accurate numerical approximation of the underlying distance integrals.
+
+    \item Small nonzero diagonal entries in the empirical matrices arise from finite-sample effects and histogram discretization, and vanish in the true distance matrices computed from exact reference densities.
+
+    \item The Bhattacharyya distance is more sensitive to histogram bin resolution trade-off as compared to the Hellinger distance as evidenced by the sharper error minimum in Figure~\ref{fig:bin_convergence}. 
+\end{itemize}
+
+
+
+\end{question}
+
+\end{document}
