@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1769873535.37147 "/home/naman/Documents/random-variates/A1/report.tex" "report.pdf" "report" 1769873537.45866 0
+["pdflatex"] 1770027611.66404 "/home/naman/Documents/random-variates/A1/report.tex" "report.pdf" "report" 1770027613.66053 0
   "/etc/texmf/web2c/texmf.cnf" 1769765269.26533 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/naman/Documents/random-variates/A1/report.tex" 1769873534.91531 34878 1145d6fab77ac53022fcf3ad51218ae8 ""
+  "/home/naman/Documents/random-variates/A1/report.tex" 1770027611.42076 34611 1cbc0a7fb5efcd608739a034a0fef14a ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -185,9 +185,9 @@
   "empirical_vs_reference_all_independent_axes.png" 1769864635.88142 243216 d7ea10226d746c5a6598c0e6330df567 ""
   "ks_confusion_matrices.png" 1769865359.03702 144596 3e711570bb6dfbc029d15770b1b58646 ""
   "ks_vs_sample_size.png" 1769865350.72 253516 a50a92e3adac93d5cb700c540656f9b7 ""
-  "report.aux" 1769873537.37011 7295 2ff957ce8a231b1428553e972ea82ba6 "pdflatex"
-  "report.out" 1769873537.37111 2173 f3c1c36a903dd86eb61ab6f85ce35429 "pdflatex"
-  "report.tex" 1769873534.91531 34878 1145d6fab77ac53022fcf3ad51218ae8 ""
+  "report.aux" 1770027613.57225 7295 2ff957ce8a231b1428553e972ea82ba6 "pdflatex"
+  "report.out" 1770027613.57225 2173 f3c1c36a903dd86eb61ab6f85ce35429 "pdflatex"
+  "report.tex" 1770027611.42076 34611 1cbc0a7fb5efcd608739a034a0fef14a ""
   "true_distance_confusion_matrices.png" 1769865359.63302 115376 ed112e94384753381a0bd3ab88c9d20f ""
   "true_ks_confusion_matrix.png" 1769865358.57202 73569 78872b3853cbbf8adbcf1a27eed8a4d1 ""
   (generated)
