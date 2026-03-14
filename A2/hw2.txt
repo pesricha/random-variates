@@ -1,0 +1,55 @@
+DS 298: Work Assignment - 2
+Due March 14, 2026
+The goal of this work is to analyze the errors E in the Algorithms (1) and
+(2) presented in the class to evaluate the top-k singular value components using
+column sampling and random projections respectively, for various values n in
+matrix dimensions and number of singular components k, in each case of the
+two different classes of matrices described.
+Pk (σ′ −σ )2
+∥A−U U T A∥2
+Let relative errors E1 = 1 ikσ2i and E2 = Pn σ2 F − 1, where σi
+k+1
+
+i
+
+i
+
+and σi′ are the input and the estimated singular values respectively as ordered
+sets, and U represents the matrix of estimated k left singular vectors. Let An×n
+be considered with values of n (x-axis in plots) as 100, 200, 400, 800, 1600.
+The relative errors are to be traced (in the y-axis) for three different values of
+k = log2 n, (log2 n)2 , n5 rounded to the nearest integer in a single plot. E1 and
+E2 can be traced in two separate plots. The number of columns sampled in
+algorithm (1) can be fixed as c = 2k. Average over 10 runs of the algorithms
+for each data point in the plot. These plots, two each for algorithms (1) and
+(2), are to be further replicated for the two matrix classes I and II.
+The trial matrices are to be generated using the singular value decomposition
+10(k−1)
+U ΣV T . The singular values given by Σkk should be fixed as i) e− n
+for
+Class-I matrices, and ii) as n−k+1
+for
+Class-II
+matrices.
+The
+algorithm
+for
+n
+generating the trial matrices is briefly described below.
+Algorithm: Generation of random trial matrices of a class
+Inputs : Σ ∈ Rn×n ; diagonal matrix of singular values.
+Outputs : A ∈ Rn×n ; trial matrix.
+Initialize : M1 ←− randn[n, n] and M2 ←− randn[n, n]; Initialize two random
+matrices.
+Generate singular vectors : Q1 R1 ←− M1 and Q2 R2 ←− M2 ; QR
+factorization of the two matrices.
+Build trial matrices : A ←− Q1 ΣQT2 ; generate test matrix of a given
+singular value distribution.
+
+Note : Submit the responses with the plots, and the codes, as separate files
+all zipped into a single folder identified by your name in full, and upload it on
+the MS-Teams channel for DS 298.
+
+1
+
+
